@@ -13,6 +13,6 @@ echo "Tika version " . $client->version() . "\n";
 
 var_dump($mime);
 
-$html = $client->rmetaFile($file, 'html');
+$html = $client->rmetaFile($file, 'html', false);
 
 var_dump($html);

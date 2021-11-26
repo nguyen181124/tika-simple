@@ -55,19 +55,36 @@ class TikaSimpleClient
         }
     }
 
-    public function rmeta($content, $output = ''){
+    /**
+     * @param $content
+     * @param string $output
+     * @param bool $recursive get all meta or only content
+     * @return array
+     */
+    public function rmeta($content, string $output = '', bool $recursive = true){
         $endpoint = '/rmeta' . ( $output ? "/" . $output : "" );
         $data = [
             'body' => $content,
         ];
         $method = 'PUT';
-        return Utils::jsonDecode($this->request($method, $endpoint, $data), true);
+        $result = Utils::jsonDecode($this->request($method, $endpoint, $data), true);
+        if($recursive){
+            return $result[0] ?? $result;
+        }else{
+            return $result[0]['X-TIKA:content'] ?? $result['X-TIKA:content'];
+        }
     }
 
-    public function rmetaFile($path, $output = ''){
+    /**
+     * @param $path
+     * @param string $output
+     * @param bool $recursive
+     * @return array
+     */
+    public function rmetaFile($path, string $output = '', bool $recursive = true){
         try{
             $fh = fopen($path, 'r+');
-            return $this->rmeta($fh, $output);
+            return $this->rmeta($fh, $output, $recursive);
         } finally {
             if(is_resource($fh)){
                 fclose($fh);
