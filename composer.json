@@ -1,0 +1,19 @@
+{
+    "name": "hocvt/tika-simple",
+    "description": "Simple tika client",
+    "type": "library",
+    "require": {
+        "guzzlehttp/guzzle": "^7.4"
+    },
+    "authors": [
+        {
+            "name": "Vu Thai Hoc",
+            "email": "vuthaihoc.ttud@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "HocVT\\TikaSimple\\" : "src"
+        }
+    }
+}
