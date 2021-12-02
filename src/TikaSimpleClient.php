@@ -5,6 +5,8 @@ namespace HocVT\TikaSimple;
 
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Utils;
 
 class TikaSimpleClient
@@ -93,7 +95,18 @@ class TikaSimpleClient
     }
 
     protected function request(string $method, string $endpoint, array $data = []) : string{
-        $response = $this->client->request($method, $endpoint, $data);
-        return $response->getBody()->getContents();
+        $retried = false;
+        start_request:
+        try{
+            $response = $this->client->request($method, $endpoint, $data);
+            return $response->getBody()->getContents();
+        }catch (GuzzleException $ex){
+            if(!$retried){
+                $retried = true;
+                goto start_request;
+            }else{
+                throw $ex;
+            }
+        }
     }
 }
