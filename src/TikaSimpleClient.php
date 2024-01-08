@@ -13,11 +13,10 @@ class TikaSimpleClient
 {
     protected $client;
 
-    public function __construct(string $host = 'http://127.0.0.1:9998')
+    public function __construct(string $host = 'http://127.0.0.1:9998', array $options = [])
     {
-        $this->client = new Client([
-            'base_uri' => $host,
-        ]);
+        $options = array_merge($options, ['base_uri' => $host]);
+        $this->client = new Client($options);
     }
 
     public function version() : string {
@@ -95,18 +94,7 @@ class TikaSimpleClient
     }
 
     protected function request(string $method, string $endpoint, array $data = []) : string{
-        $retried = false;
-        start_request:
-        try{
-            $response = $this->client->request($method, $endpoint, $data);
-            return $response->getBody()->getContents();
-        }catch (GuzzleException $ex){
-            if(!$retried){
-                $retried = true;
-                goto start_request;
-            }else{
-                throw $ex;
-            }
-        }
+        $response = $this->client->request($method, $endpoint, $data);
+        return $response->getBody()->getContents();
     }
 }
